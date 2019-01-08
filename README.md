@@ -1,5 +1,10 @@
 # SDGC
 
+```
+git clone https://github.com/frankHelens/SDGC-wechat
+
+```
+
 ## Project setup
 ```
 npm install
