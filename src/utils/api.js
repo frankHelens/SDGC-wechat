@@ -2,43 +2,42 @@
 
 /* globals localStorage */
 import axios from 'axios'
-import moment from 'moment'
-import md5 from 'md5'
-import { Message } from 'element-ui'
-import { API, HostPort } from './common'
+import dayjs from 'dayjs'
+// import md5 from 'md5'
+import { API } from './common'
 axios.defaults.baseURL = API
 axios.defaults.headers.common['Gddx-Access-AppId'] = 'web'
 axios.defaults.headers.post['Content-Type'] = 'application/json'
 axios.defaults.headers.delete['Content-Type'] = 'application/json'
 
-function signFormat (props) {
-  return md5(Object.keys(props).map(el => (el + '=' + props[el]).toLowerCase()).sort().join('&') + localStorage.token)
-}
+// function signFormat (props) {
+//   return md5(Object.keys(props).map(el => (el + '=' + props[el]).toLowerCase()).sort().join('&') + localStorage.token)
+// }
 
-export function httpHeader (props, timeStamp) {
-  let sign = {
-    'Gddx-Access-Token': localStorage.token,
-    'Gddx-Access-Version': '0.1.0'
-  }
-  return {
-    ...props.headers,
-    'Gddx-Access-Sign': signFormat({
-      ...sign,
-      ...props.params,
-      ...props.data,
-      'Gddx-Access-TimeStamp': timeStamp
-    }),
-    'Gddx-Access-TimeStamp': timeStamp,
-    'Gddx-Access-Token': sign['Gddx-Access-Token'],
-    'Gddx-Access-Version': sign['Gddx-Access-Version']
-  }
-}
+// export function httpHeader (props, timeStamp) {
+//   let sign = {
+//     'Gddx-Access-Token': localStorage.token,
+//     'Gddx-Access-Version': '0.1.0'
+//   }
+//   return {
+//     ...props.headers,
+//     'Gddx-Access-Sign': signFormat({
+//       ...sign,
+//       ...props.params,
+//       ...props.data,
+//       'Gddx-Access-TimeStamp': timeStamp
+//     }),
+//     'Gddx-Access-TimeStamp': timeStamp,
+//     'Gddx-Access-Token': sign['Gddx-Access-Token'],
+//     'Gddx-Access-Version': sign['Gddx-Access-Version']
+//   }
+// }
 
 export function fetch (props) {
-  const timeStamp = moment().format('x')
+  const timeStamp = dayjs().format('x')
   return axios({
     ...props,
-    headers: httpHeader(props, timeStamp),
+    // headers: httpHeader(props, timeStamp),
     params: {
       ...props.params,
       timeStamp: timeStamp
@@ -48,14 +47,9 @@ export function fetch (props) {
       if (response.data.code === 0) {
         return response.data.data || response.data
       } else if (response.data.code === 6) {
-        Message({
-          type: 'error',
-          showClose: true,
-          duration: 8000,
-          message: response.data.data.map(item => {
-            return `${item.code}:${item.message}`
-          }).join('\n\r')
-        })
+        alert(response.data.data.map(item => {
+          return `${item.code}:${item.message}`
+        }).join('\n\r'))
         return false
       } else {
         throw Object({
@@ -72,11 +66,7 @@ export function fetch (props) {
       if (status === 401 || status === 403) {
         window.location.href = '/#/login'
       } else {
-        Message({
-          type: 'error',
-          showClose: true,
-          message: status + ':' + statusText
-        })
+        alert(status + ':' + statusText)
       }
     }
     return false
@@ -142,15 +132,6 @@ export const getRelationByFilter = ({ relations }) => {
   })
 }
 
-const getDownLink = ({ url, params = {} }) => {
-  let strParams = ''
-  Object.keys(params).map((key, index) => {
-    strParams += index > 0 ? `&${key}=${params[key]}` : `${key}=${params[key]}`
-  })
-  const link = strParams ? url + '?' + encodeURIComponent(strParams) : url
-  return HostPort(link)
-}
-
 export const fetchAll = ({ requests = [] }) => {
   return axios.all(
     requests
@@ -170,7 +151,6 @@ const api = {
     Vue.prototype.$httpDelete = httpDelete
     Vue.prototype.$getRelation = getRelation
     Vue.prototype.$getFilterRelation = getRelationByFilter
-    Vue.prototype.$getDownLink = getDownLink
   }
 }
 
