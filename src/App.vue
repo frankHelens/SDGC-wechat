@@ -1,29 +1,39 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
     <router-view/>
+    <van-tabbar
+      v-model="active">
+      <van-tabbar-item
+        v-for="(tabBar, index) in tabBarList"
+        :key="index"
+        :icon="tabBar.icon"
+        :url="tabBar.url">
+        {{tabBar.label}}
+      </van-tabbar-item>
+    </van-tabbar>
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-    &.router-link-exact-active {
-      color: #42b983;
+<script>
+export default {
+  data () {
+    return {
+      tabBarList: [{
+        icon: 'home-o',
+        name: 'home',
+        label: '首页',
+        url: '/#/'
+      }, {
+        icon: 'search',
+        name: 'carChange',
+        label: '选车比价',
+        url: '#/carChange'
+      }],
+      active: '0'
     }
   }
 }
+</script>
+
+<style lang="sass">
 </style>

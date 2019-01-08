@@ -1,5 +1,3 @@
-// this is aliased in webpack config based on server/client build
-
 /* globals localStorage */
 import axios from 'axios'
 import dayjs from 'dayjs'
@@ -112,26 +110,6 @@ export const httpDelete = ({ url }) => {
   })
 }
 
-export const getRelation = ({ relations = '' }) => {
-  return fetch({
-    method: 'get',
-    url: '/dxbase/relation',
-    params: {
-      relationList: relations
-    }
-  })
-}
-
-export const getRelationByFilter = ({ relations }) => {
-  return fetch({
-    method: 'post',
-    url: '/dxbase/relation',
-    data: {
-      relationList: relations
-    }
-  })
-}
-
 export const fetchAll = ({ requests = [] }) => {
   return axios.all(
     requests
@@ -149,8 +127,6 @@ const api = {
     Vue.prototype.$patch = httpPatch
     Vue.prototype.$put = httpPut
     Vue.prototype.$httpDelete = httpDelete
-    Vue.prototype.$getRelation = getRelation
-    Vue.prototype.$getFilterRelation = getRelationByFilter
   }
 }
 
